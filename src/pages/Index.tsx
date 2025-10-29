@@ -5,7 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import Icon from '@/components/ui/icon';
+import OrderForm from '@/components/OrderForm';
 
 interface Product {
   id: number;
@@ -80,6 +82,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<string>('all');
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
   const categories = ['all', 'Пионы', 'Розы', 'Композиции'];
@@ -271,7 +274,14 @@ const Index = () => {
                             <span>Итого:</span>
                             <span>{calculateTotal().toLocaleString()} ₽</span>
                           </div>
-                          <Button className="w-full mt-4" size="lg">
+                          <Button 
+                            className="w-full mt-4" 
+                            size="lg"
+                            onClick={() => {
+                              setIsCartOpen(false);
+                              setIsOrderFormOpen(true);
+                            }}
+                          >
                             Оформить заказ
                           </Button>
                         </div>
@@ -294,7 +304,7 @@ const Index = () => {
               </h1>
               <p className="text-lg text-muted-foreground">
                 Цветы | Букеты | Композиции<br />
-                Доставка по Москве - 2 часа
+                Доставка по Красноярску - 2 часа
               </p>
               <Button 
                 size="lg" 
@@ -306,9 +316,9 @@ const Index = () => {
             </div>
             <div className="relative">
               <img
-                src="https://cdn.poehali.dev/files/d720ddcf-556e-47a3-8bbb-06dc8b9ba8dd.png"
+                src="https://cdn.poehali.dev/files/ac5302a3-c297-40e6-8134-b7c094fc0192.png"
                 alt="Senti Flora"
-                className="w-full h-auto rounded-2xl"
+                className="w-full h-auto rounded-2xl shadow-2xl"
               />
             </div>
           </div>
@@ -382,7 +392,7 @@ const Index = () => {
                 <Icon name="Clock" size={32} className="mb-4 text-primary" />
                 <h3 className="text-xl font-semibold mb-2">Быстрая доставка</h3>
                 <p className="text-muted-foreground">
-                  Доставим ваш заказ по Москве в течение 2 часов
+                  Доставим ваш заказ по Красноярску в течение 2 часов
                 </p>
               </CardContent>
             </Card>
@@ -390,9 +400,9 @@ const Index = () => {
             <Card>
               <CardContent className="p-6">
                 <Icon name="MapPin" size={32} className="mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-2">По всей Москве</h3>
+                <h3 className="text-xl font-semibold mb-2">По всему городу</h3>
                 <p className="text-muted-foreground">
-                  Работаем по всей Москве и ближайшему Подмосковью
+                  Работаем по всему Красноярску
                 </p>
               </CardContent>
             </Card>
@@ -432,7 +442,7 @@ const Index = () => {
             </div>
             <div>
               <Icon name="MapPin" size={24} className="mx-auto mb-2 text-primary" />
-              <p className="text-muted-foreground">Москва</p>
+              <p className="text-muted-foreground">Красноярск</p>
             </div>
             <div>
               <Icon name="Clock" size={24} className="mx-auto mb-2 text-primary" />
@@ -447,6 +457,21 @@ const Index = () => {
           <p className="text-sm">© 2024 Senti Flora. Студия авторской флористики</p>
         </div>
       </footer>
+
+      <Dialog open={isOrderFormOpen} onOpenChange={setIsOrderFormOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Оформление заказа</DialogTitle>
+          </DialogHeader>
+          <OrderForm 
+            total={calculateTotal()} 
+            onSuccess={() => {
+              setIsOrderFormOpen(false);
+              setCart([]);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
