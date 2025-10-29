@@ -1,0 +1,37 @@
+{
+  "tests": [
+    {
+      "name": "Get all products",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "0": {
+          "id": "number",
+          "name": "string",
+          "price": "number",
+          "category": "string"
+        }
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Create new product",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Тестовый букет",
+        "price": 5000,
+        "category": "Тест",
+        "description": "Описание тестового букета",
+        "image_url": "https://example.com/image.jpg"
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "id": "number",
+        "name": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

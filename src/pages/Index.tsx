@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -26,58 +26,10 @@ interface CartItem extends Product {
   };
 }
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: 'Букет "Нежность"',
-    price: 4500,
-    category: 'Пионы',
-    image: 'https://cdn.poehali.dev/projects/aaac1393-924a-4f74-a7f5-dc7a32255fec/files/11bcf247-58cc-4d5c-aad0-e70a04d019f9.jpg',
-    description: 'Роскошный букет из пионов и роз в нежно-розовых тонах'
-  },
-  {
-    id: 2,
-    name: 'Букет "Романтика"',
-    price: 3800,
-    category: 'Розы',
-    image: 'https://cdn.poehali.dev/projects/aaac1393-924a-4f74-a7f5-dc7a32255fec/files/611f3673-c70d-4b72-b9f5-b58c51e76ba8.jpg',
-    description: 'Элегантная композиция из роз и пионов'
-  },
-  {
-    id: 3,
-    name: 'Букет "Шарм"',
-    price: 5200,
-    category: 'Композиции',
-    image: 'https://cdn.poehali.dev/projects/aaac1393-924a-4f74-a7f5-dc7a32255fec/files/78515a50-10fb-4054-80d2-b28eab05d791.jpg',
-    description: 'Изысканная композиция в фирменной коробке'
-  },
-  {
-    id: 4,
-    name: 'Букет "Весна"',
-    price: 4200,
-    category: 'Пионы',
-    image: 'https://cdn.poehali.dev/projects/aaac1393-924a-4f74-a7f5-dc7a32255fec/files/11bcf247-58cc-4d5c-aad0-e70a04d019f9.jpg',
-    description: 'Свежий букет с пионами и тюльпанами'
-  },
-  {
-    id: 5,
-    name: 'Букет "Элегия"',
-    price: 3500,
-    category: 'Розы',
-    image: 'https://cdn.poehali.dev/projects/aaac1393-924a-4f74-a7f5-dc7a32255fec/files/611f3673-c70d-4b72-b9f5-b58c51e76ba8.jpg',
-    description: 'Классический букет из белых и розовых роз'
-  },
-  {
-    id: 6,
-    name: 'Букет "Грация"',
-    price: 4800,
-    category: 'Композиции',
-    image: 'https://cdn.poehali.dev/projects/aaac1393-924a-4f74-a7f5-dc7a32255fec/files/78515a50-10fb-4054-80d2-b28eab05d791.jpg',
-    description: 'Премиум композиция в шляпной коробке'
-  }
-];
+const API_URL = 'https://functions.poehali.dev/b7ceafa2-0206-46d2-b757-6063a8f5d3c6';
 
 const Index = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<string>('all');
@@ -86,6 +38,22 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
 
   const categories = ['all', 'Пионы', 'Розы', 'Композиции'];
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        setProducts(data.map((p: any) => ({
+          ...p,
+          image: p.image_url
+        })));
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const filteredProducts = products.filter(product => {
     const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
